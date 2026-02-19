@@ -10,5 +10,7 @@ locals {
     public_subnet_resource_names = "${var.project}-${var.env}-publicsubnet"
     private_subnet_resource_names = "${var.project}-${var.env}-privatesubnet"
     database_subnet_resource_names = "${var.project}-${var.env}-databasesubnet"
+    public_routetable_resource_name =  "${var.project}-${var.env}-public_routetable"
+    private_routetable_resource_name =  "${var.project}-${var.env}-private_routetable"
+        }
 
-}

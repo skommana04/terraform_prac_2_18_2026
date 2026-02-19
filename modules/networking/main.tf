@@ -62,3 +62,72 @@ resource "aws_subnet" "database" {
         }
     )
 }
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.main.id
+
+    tags = merge (
+        local.common_tags,
+        {
+            Name = local.public_routetable_resource_name
+        }
+    )
+}
+resource "aws_route" "public_r" {
+  route_table_id            = aws_route_table.public_rt.id
+  destination_cidr_block    = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.igw.id
+}
+
+resource "aws_route_table_association" "public-rta" {
+  count = length(var.public_cidrs)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+##eip
+resource "aws_eip" "example" {
+  # In a VPC, the 'domain' attribute defaults to "vpc". 
+  # Setting it explicitly helps ensure the correct behavior.
+  domain = "vpc" 
+
+  tags = {
+    Name = "unassociated-eip"
+  }
+}
+
+##nat
+resource "aws_nat_gateway" "example" {
+  allocation_id = aws_eip.example.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = {
+    Name = "gw NAT"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.igw]
+}
+
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.main.id
+
+    tags = merge (
+        local.common_tags,
+        {
+            Name = local.private_routetable_resource_name
+        }
+    )
+}
+resource "aws_route" "private_r" {
+  route_table_id            = aws_route_table.private_rt.id
+  destination_cidr_block    = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.example.id
+}
+
+resource "aws_route_table_association" "private-rta" {
+  count = length(var.private_cidrs)
+  subnet_id      = aws_subnet.private[count.index].id
+  route_table_id = aws_route_table.private_rt.id
+}
