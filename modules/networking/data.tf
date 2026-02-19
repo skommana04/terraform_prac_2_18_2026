@@ -1,3 +1,3 @@
-data "aws_availability_zone" "example" {
+data "aws_availability_zones" "example" {
   region = "us-east-1"
 }
