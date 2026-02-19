@@ -3,3 +3,4 @@ variable "project" {}
 variable "env" {}
 variable "public_cidrs" {}
 variable "private_cidrs" {}
+variable "database_cidrs" {}

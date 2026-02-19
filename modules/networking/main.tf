@@ -40,12 +40,25 @@ resource "aws_subnet" "private" {
     vpc_id     = aws_vpc.main.id
     cidr_block = var.private_cidrs[count.index]
     availability_zone   = local.az_list[count.index]
-    map_public_ip_on_launch = true
-
+  
     tags = merge (
         local.common_tags,
         {
             Name = "${local.private_subnet_resource_names}-${local.az_list[count.index]}"
+        }
+    )
+}
+
+resource "aws_subnet" "database" {
+    count =     length(var.database_cidrs)
+    vpc_id     = aws_vpc.main.id
+    cidr_block = var.database_cidrs[count.index]
+    availability_zone   = local.az_list[count.index]
+  
+    tags = merge (
+        local.common_tags,
+        {
+            Name = "${local.database_subnet_resource_names}-${local.az_list[count.index]}"
         }
     )
 }

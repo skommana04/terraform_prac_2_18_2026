@@ -9,5 +9,6 @@ locals {
     az_list = slice(data.aws_availability_zones.example.names, 0,2)
     public_subnet_resource_names = "${var.project}-${var.env}-publicsubnet"
     private_subnet_resource_names = "${var.project}-${var.env}-privatesubnet"
+    database_subnet_resource_names = "${var.project}-${var.env}-databasesubnet"
 
 }
