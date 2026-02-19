@@ -4,5 +4,6 @@ module "vpc" {
   project =  var.project
   env = var.env
   public_cidrs = var.public_cidrs
+  private_cidrs = var.private_cidrs
 
 }
