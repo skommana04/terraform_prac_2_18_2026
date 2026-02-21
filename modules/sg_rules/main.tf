@@ -4,8 +4,8 @@ resource "aws_security_group_rule" "frontend_frontend-lb" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  security_group_id = data.aws_ssm_parameter.frontend_sg_id.value
-  source_security_group_id = data.aws_ssm_parameter.frontend-alb_sg_id.value
+  security_group_id =  var.frontend_sg_id #data.aws_ssm_parameter.frontend_sg_id.value
+  source_security_group_id = var.frontend-alb_sg_id #data.aws_ssm_parameter.frontend-alb_sg_id.value
   #module.sg[9].sg_id
 }
 resource "aws_security_group_rule" "backend_lb-bastion" {
@@ -14,8 +14,8 @@ resource "aws_security_group_rule" "backend_lb-bastion" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  security_group_id = data.aws_ssm_parameter.backend-alb_sg_id.value
-  source_security_group_id = data.aws_ssm_parameter.bastion_sg_id.value
+  security_group_id = var. backend-alb_sg_id #data.aws_ssm_parameter.backend-alb_sg_id.value
+  source_security_group_id = var.bastion_sg_id  #data.aws_ssm_parameter.bastion_sg_id.value
   #module.sg[9].sg_id
 }
 
@@ -25,6 +25,6 @@ resource "aws_security_group_rule" "bastion-ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  security_group_id = data.aws_ssm_parameter.bastion_sg_id.value
+  security_group_id = var.bastion_sg_id #data.aws_ssm_parameter.bastion_sg_id.value
   cidr_blocks       = ["0.0.0.0/0"]
 }
