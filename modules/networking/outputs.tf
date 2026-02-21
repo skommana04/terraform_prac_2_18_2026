@@ -6,5 +6,5 @@ output "azs" {
 }
 
 output "public_subnet_ids" {
-    value = data.aws_subnet.public[*].id
+    value = aws_subnet.public[*].id
 }
