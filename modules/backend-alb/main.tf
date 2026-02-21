@@ -3,7 +3,7 @@ resource "aws_lb" "backend-alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = data.aws_ssm_parameter.backend-alb_sg_id.value
-  subnets            = split(",",data.aws_ssm_parameter.public_subnet_ids.value)
+  subnets    = split(",",data.aws_ssm_parameter.private_subnet_ids.value)
 
  #enable_deletion_protection = true
 
