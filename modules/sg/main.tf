@@ -15,6 +15,7 @@ resource "aws_security_group" "allow_sg" {
 }
 
 resource "aws_security_group_rule" "frontend_frontend-lb" {
+  count = var.sg_name == "frontend" ? 1 : 0
   type              = "ingress"
   from_port         = 80
   to_port           = 80
