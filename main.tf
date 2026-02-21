@@ -20,9 +20,9 @@ module "sg" {
     depends_on = [ module.vpc ]
 }
 
-module "ec2" {
-    source = "./modules/ec2"
-    project =  var.project
-    env = var.env  
+# module "ec2" {
+#     source = "./modules/ec2"
+#     project =  var.project
+#     env = var.env  
     
-}
+# }

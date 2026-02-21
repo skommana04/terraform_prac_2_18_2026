@@ -4,3 +4,7 @@ output "vpc_id" {
 output "azs" {
     value = data.aws_availability_zones.example
 }
+
+output "public_subnet_ids" {
+    value = data.aws_subnet.public[*].id
+}
