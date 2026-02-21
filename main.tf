@@ -13,7 +13,7 @@ module "sg" {
     count = length(var.sg_names)
     #for_each = toset(var.sg_names)
     #sg_name = each.key
-    sg_name = sg_names[count.index]
+    sg_name = var.sg_names[count.index]
     project =  var.project
     env = var.env    
     vpc_ssm_param_name = "${var.project}-${var.env}-vpc_id"
