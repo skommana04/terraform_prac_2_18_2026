@@ -1,8 +1,8 @@
 resource "aws_security_group" "allow_sg" {
-  name        = local.sg_name
+  name        = local.full_sg_name
   vpc_id      = local.vpc_id
 
   tags = {
-    Name = local.sg_name
+    Name = local.full_sg_name
   }
 }

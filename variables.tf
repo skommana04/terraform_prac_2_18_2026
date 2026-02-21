@@ -4,3 +4,6 @@ variable "env" {}
 variable "public_cidrs" {}
 variable "private_cidrs" {}
 variable "database_cidrs" {}
+variable "sg_names" {
+    type = list(string)
+}

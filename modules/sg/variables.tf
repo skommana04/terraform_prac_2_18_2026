@@ -8,3 +8,4 @@ variable "env" {
     type = string
 }
 variable vpc_ssm_param_name {}
+variable "sg_name" {}
