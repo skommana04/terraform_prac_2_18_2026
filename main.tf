@@ -29,6 +29,7 @@ module "ec2" {
 
 module "sg_rules" {
     source = "./modules/sg_rules"
+    count = length(var.sg_names)
     sg_name = var.sg_names[count.index]
     project =  var.project
     env = var.env  
