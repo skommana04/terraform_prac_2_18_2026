@@ -19,7 +19,7 @@ resource "aws_security_group_rule" "frontend_frontend-lb" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  security_group_id = "/${var.project}/${var.env}/frontend-sg"
-  source_security_group_id = "/${var.project}/${var.env}/frontend-alb-sg"
+  security_group_id = data.aws_ssm_parameter.frontend_sg_id
+  source_security_group_id = data.aws_ssm_parameter.frontend-alb_sg_id
   #module.sg[9].sg_id
 }
