@@ -24,6 +24,7 @@ module "ec2" {
     source = "./modules/ec2"
     project =  var.project
     env = var.env  
+    depends_on = [module.sg]
     
 }
 
@@ -33,6 +34,6 @@ module "sg_rules" {
     sg_name = var.sg_names[count.index]
     project =  var.project
     env = var.env  
-    depends_on = [ module.sg ]
+    depends_on = [ module.ec2 ]
     
 }
