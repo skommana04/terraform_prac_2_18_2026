@@ -13,3 +13,14 @@ resource "aws_security_group" "allow_sg" {
     Name = local.full_sg_name
   }
 }
+
+resource "aws_security_group_rule" "frontend_frontend-lb" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = [aws_vpc.example.cidr_block]
+  security_group_id = "/${var.project}/${var.env}/frontend-sg"
+  source_security_group_id = "/${var.project}/${var.env}/frontend-alb-sg"
+  #module.sg[9].sg_id
+}
