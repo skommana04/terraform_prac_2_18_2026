@@ -131,3 +131,9 @@ resource "aws_route_table_association" "private-rta" {
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private_rt.id
 }
+
+resource "aws_ssm_parameter" "vpc_id" {
+  name  = "${var.project}-${var.env}-vpc_id"
+  type  = "String"
+  value = aws_vpc.main.id
+}
