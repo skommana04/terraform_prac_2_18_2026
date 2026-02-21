@@ -34,10 +34,10 @@ module "sg_rules" {
     sg_name = var.sg_names[count.index]
     project =  var.project
     env = var.env  
-    frontend_sg_id = module.sg[10].sg_id
-    frontend-alb_sg_id = module.sg[12].sg_id
-    backend-alb_sg_id = module.sg[13].sg_id
-    bastion_sg_id = module.sg[11].sg_id 
+    frontend_sg_id = module.sg[9].sg_id
+    frontend-alb_sg_id = module.sg[11].sg_id
+    backend-alb_sg_id = module.sg[12].sg_id
+    bastion_sg_id = module.sg[10].sg_id 
     depends_on = [ module.ec2 ]
     
 }
