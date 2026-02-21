@@ -11,7 +11,7 @@ data "aws_ami" "redhat" {
     values = ["hvm"]
   }
 
-  owners = ["654654431182"] # Canonical
+  owners = ["973714476881"] # Canonical
 }
 
 data "aws_ssm_parameter" "bastion_sg_id" {
