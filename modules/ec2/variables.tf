@@ -1,3 +1,3 @@
 variable "project" {}
-variable "env" {}
-variable sg_name {}
+variable "env" {}#
+#variable sg_name {}

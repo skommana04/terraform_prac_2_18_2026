@@ -137,3 +137,10 @@ resource "aws_ssm_parameter" "vpc_id" {
   type  = "String"
   value = aws_vpc.main.id
 }
+
+resource "aws_ssm_parameter" "public_subnet_ids" {
+  count = length(var.public_cidrs)
+  name  = "/${var.project}/${var.env}/public_subnet_ids"
+  type  = "StringList"
+  value = join(",", aws_subnet.public[*].id)
+}
