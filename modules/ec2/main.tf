@@ -39,7 +39,7 @@ resource "terraform_data" "mongodb" {
         destination = "/tmp/bootstrap.sh"
       
     }
-    provisioner "remote_exec" {
+    provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh"
@@ -75,7 +75,7 @@ resource "terraform_data" "redis" {
         destination = "/tmp/bootstrap.sh"
       
     }
-    provisioner "remote_exec" {
+    provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh"
@@ -112,7 +112,7 @@ resource "terraform_data" "rabbitmq" {
         destination = "/tmp/bootstrap.sh"
       
     }
-    provisioner "remote_exec" {
+    provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh"
@@ -154,7 +154,7 @@ resource "terraform_data" "mysql" {
         destination = "/tmp/bootstrap.sh"
       
     }
-    provisioner "remote_exec" {
+    provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh mysql dev"
