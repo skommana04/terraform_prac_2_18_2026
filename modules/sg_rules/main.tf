@@ -40,13 +40,36 @@ resource "aws_security_group_rule" "mongodb-bastion" {
   
 }
 
-resource "aws_security_group_rule" "catalogue-bastion" {
-  count = var.sg_name == "mongodb" ? 1 : 0
+resource "aws_security_group_rule" "redis-bastion" {
+  count = var.sg_name == "redis" ? 1 : 0
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  security_group_id = var.catalogue_sg_id   #data.aws_ssm_parameter.bastion_sg_id.value
+  security_group_id = var.redis_sg_id   #data.aws_ssm_parameter.bastion_sg_id.value
+  source_security_group_id = var.bastion_sg_id
+  
+}
+
+resource "aws_security_group_rule" "rabbitmq-bastion" {
+  count = var.sg_name == "rabbitmq" ? 1 : 0
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = var.rabbitmq_sg_id   #data.aws_ssm_parameter.bastion_sg_id.value
+  source_security_group_id = var.bastion_sg_id
+  
+}
+
+
+resource "aws_security_group_rule" "mysql-bastion" {
+  count = var.sg_name == "mysql" ? 1 : 0
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  security_group_id = var.mysql_sg_id   #data.aws_ssm_parameter.bastion_sg_id.value
   source_security_group_id = var.bastion_sg_id
   
 }

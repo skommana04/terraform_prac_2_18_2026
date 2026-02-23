@@ -15,3 +15,6 @@ variable "backend-alb_sg_id" {}
 variable "bastion_sg_id" {}
 variable "mongodb_sg_id" {}
 variable "catalogue_sg_id" {}
+variable "redis_sg_id" {}
+variable "rabbitmq_sg_id" {}
+variable "mysql_sg_id" {}
