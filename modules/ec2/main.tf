@@ -51,7 +51,7 @@ resource "aws_instance" "redis" {
   ami           = local.ami_id
   instance_type = "t3.micro"
   vpc_security_group_ids = [ local.redis_sg_id ]
-  subnet_id = local.private_subnet_id
+  subnet_id = local.database_subnet_id
 
   tags = {
     Terraform = true
@@ -88,7 +88,7 @@ resource "aws_instance" "rabbitmq" {
   ami           = local.ami_id
   instance_type = "t3.micro"
   vpc_security_group_ids = [ local.rabbitmq_sg_id ]
-  subnet_id = local.private_subnet_id
+  subnet_id = local.database_subnet_id
 
   tags = {
     Terraform = true
@@ -161,5 +161,84 @@ resource "terraform_data" "mysql" {
         ]
     }
 }
+#------------------------------------------------------
+resource "aws_instance" "catalogue" {
+  ami           = local.ami_id
+  instance_type = "t3.micro"
+  vpc_security_group_ids = [ local.catalogue_sg_id ]
+  subnet_id = local.private_subnet_id
+  iam_instance_profile = aws_iam_instance_profile.mysql.name
 
+  tags = {
+    Terraform = true
+    Name = "${var.project}-${var.env}-mysql"
+  }
+}
 
+resource "terraform_data" "catalogue" {
+    triggers_replace = [
+        aws_instance.catalogue.id
+    ]
+
+    connection {
+        type = "ssh"
+        user = "ec2_user"
+        password = "DevOps321"
+        host = aws_instance.catalogue.private_ip
+    }
+    provisioner "file" {
+        source = "bootstrap.sh"
+        destination = "/tmp/catalogue.sh"
+      
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/bootstrap.sh",
+            "sudo sh /tmp/bootstrap.sh catalogue ${var.env}"
+        ]
+    }
+}
+#----------------------
+resource "aws_route53_record" "mongodb" {
+  zone_id = "Z06083563MQUI4X3GPRCP"
+  name    = "mongodb-dev.saidevops.site"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mongodb.private_ip]
+}
+
+resource "aws_route53_record" "redis" {
+  zone_id = "Z06083563MQUI4X3GPRCP"
+  name    = "redis-dev.saidevops.site"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.redis.private_ip]
+}
+
+resource "aws_route53_record" "rabbitmq" {
+  zone_id = "Z06083563MQUI4X3GPRCP"
+  name    = "rabbitmq-dev.saidevops.site"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.rabbitmq.private_ip]
+}
+
+resource "aws_route53_record" "mysql" {
+  zone_id = "Z06083563MQUI4X3GPRCP"
+  name    = "mysql-dev.saidevops.site"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mysql.private_ip]
+}
+
+resource "aws_ec2_instance_state" "stopmycatalogue" {
+    instance_id  = aws_instance.catalogue.id
+    state = "stopped" 
+    depends_on = [ terraform_data.catalogue ]
+}
+
+resource "aws_ami_from_instance" "example" {
+  name               = "roboshop-dev-catalogue-ami"
+  source_instance_id = aws_instance.catalogue.id
+  depends_on = [ aws_ec2_instance_state.stopmycatalogue ]
+}

@@ -39,6 +39,7 @@ module "sg_rules" {
     backend-alb_sg_id = module.sg[12].sg_id
     bastion_sg_id = module.sg[10].sg_id 
     mongodb_sg_id = module.sg[0].sg_id 
+    catalogue_sg_id = module.sg[4].sg_id 
     depends_on = [ module.ec2 ]
     
 }

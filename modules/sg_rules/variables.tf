@@ -14,3 +14,4 @@ variable "frontend-alb_sg_id" {}
 variable "backend-alb_sg_id" {}
 variable "bastion_sg_id" {}
 variable "mongodb_sg_id" {}
+variable "catalogue_sg_id" {}
