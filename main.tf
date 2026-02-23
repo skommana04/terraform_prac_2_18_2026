@@ -42,7 +42,7 @@ module "sg_rules" {
     catalogue_sg_id = module.sg[4].sg_id 
     redis_sg_id = module.sg[0].sg_id
     mysql_sg_id = module.sg[2].sg_id
-    rabbitmq_sg_id = mdoule.sg[1].sg_id
+    rabbitmq_sg_id = module.sg[1].sg_id
     depends_on = [ module.ec2 ]
     
 }
