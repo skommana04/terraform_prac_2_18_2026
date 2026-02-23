@@ -4,11 +4,17 @@ resource "aws_instance" "example" {
   vpc_security_group_ids = [ local.bastion_sg_id ]
   subnet_id = local.public_subnet_id
   user_data = file("${path.module}/bastion.sh")
+  iam_instance_profile = aws_iam_instance_profile.bastion.name
 
   tags = {
     Terraform = true
     Name = "${var.project}-${var.env}-bastion"
   }
+}
+
+resource "aws_iam_instance_profile" "bastion" {
+  name = "bastion"
+  role = "EC2BastionRead"
 }
 
 resource "aws_instance" "mongodb" {
@@ -33,6 +39,9 @@ resource "terraform_data" "mongodb" {
         user = "ec2_user"
         password = "DevOps321"
         host = aws_instance.mongodb.private_ip
+        bastion_host     = aws_instance.example.public_ip # Bastion's public IP
+        bastion_user     = "ec2-user"
+        bastion_password = "DevOps321" # Or ba
     }
     provisioner "file" {
         source = "bootstrap.sh"
@@ -69,6 +78,9 @@ resource "terraform_data" "redis" {
         user = "ec2_user"
         password = "DevOps321"
         host = aws_instance.redis.private_ip
+        bastion_host     = aws_instance.example.public_ip # Bastion's public IP
+        bastion_user     = "ec2-user"
+        bastion_password = "DevOps321" # Or ba
     }
     provisioner "file" {
         source = "bootstrap.sh"
@@ -106,6 +118,9 @@ resource "terraform_data" "rabbitmq" {
         user = "ec2_user"
         password = "DevOps321"
         host = aws_instance.rabbitmq.private_ip
+        bastion_host     = aws_instance.example.public_ip # Bastion's public IP
+        bastion_user     = "ec2-user"
+        bastion_password = "DevOps321" # Or ba
     }
     provisioner "file" {
         source = "bootstrap.sh"
@@ -148,6 +163,9 @@ resource "terraform_data" "mysql" {
         user = "ec2_user"
         password = "DevOps321"
         host = aws_instance.mysql.private_ip
+        bastion_host     = aws_instance.example.public_ip # Bastion's public IP
+        bastion_user     = "ec2-user"
+        bastion_password = "DevOps321" # Or ba
     }
     provisioner "file" {
         source = "bootstrap.sh"
@@ -185,6 +203,10 @@ resource "terraform_data" "catalogue" {
         user = "ec2_user"
         password = "DevOps321"
         host = aws_instance.catalogue.private_ip
+        bastion_host     = aws_instance.example.public_ip # The jump-off point
+        bastion_user     = "ec2-user"
+        bastion_password = "DevOps321"      
+        
     }
     provisioner "file" {
         source = "bootstrap.sh"
@@ -270,55 +292,25 @@ resource "aws_lb_target_group" "catalogue" {
 #   image_id = aws_ami_from_instance.example.id
 
 #   instance_initiated_shutdown_behavior = "terminate"
-
-#   instance_market_options {
-#     market_type = "spot"
-#   }
-
-#   instance_type = "t2.micro"
-
-#   kernel_id = "test"
-
-#   key_name = "test"
-
-#   license_specification {
-#     license_configuration_arn = "arn:aws:license-manager:eu-west-1:123456789012:license-configuration:lic-0123456789abcdef0123456789abcdef"
-#   }
-
-#   metadata_options {
-#     http_endpoint               = "enabled"
-#     http_tokens                 = "required"
-#     http_put_response_hop_limit = 1
-#     instance_metadata_tags      = "enabled"
-#   }
-
-#   monitoring {
-#     enabled = true
-#   }
-
-#   network_performance_options {
-#     bandwidth_weighting = "vpc-1"
-#   }
-
-#   network_interfaces {
-#     associate_public_ip_address = true
-#   }
-
-#   placement {
-#     availability_zone = "us-west-2a"
-#   }
-
-#   ram_disk_id = "test"
-
-#   vpc_security_group_ids = ["sg-12345678"]
+#   instance_type = "t3.micro"
+#   vpc_security_group_ids = [ local.catalogue_sg_id ]
 
 #   tag_specifications {
 #     resource_type = "instance"
 
 #     tags = {
-#       Name = "test"
+#       Name = "roboshop-dev-catalogue"
 #     }
 #   }
+# 
+#   tag_specifications {
+#     resource_type = "volume"
 
-#   user_data = filebase64("${path.module}/example.sh")
+#     tags = {
+#       Name = "roboshop-dev-catalogue"
+#     }
+#   }
+#     tags = {
+#       Name = "roboshop-dev-catalogue"
+#     }
 # }
