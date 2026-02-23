@@ -247,7 +247,7 @@ resource "aws_lb_target_group" "catalogue" {
   name     = "roboshop-dev-catalogue"
   port     = 8080
   protocol = "HTTP"
-  vpc_id   = data.aws_ssm_parameter.vpc_id
+  vpc_id   = data.aws_ssm_parameter.vpc_id.value
   deregistration_delay = 60
   health_check {
     healthy_threshold =2 
@@ -267,37 +267,7 @@ resource "aws_lb_target_group" "catalogue" {
 # resource "aws_launch_template" "catalogue" {
 #   name = "roboshop-dev-catalogue"
 
-#   block_device_mappings {
-#     device_name = "/dev/sdf"
-
-#     ebs {
-#       volume_size = 20
-#     }
-#   }
-
-#   capacity_reservation_specification {
-#     capacity_reservation_preference = "open"
-#   }
-
-#   cpu_options {
-#     core_count       = 4
-#     threads_per_core = 2
-#   }
-
-#   credit_specification {
-#     cpu_credits = "standard"
-#   }
-
-#   disable_api_stop        = true
-#   disable_api_termination = true
-
-#   ebs_optimized = true
-
-#   iam_instance_profile {
-#     name = "test"
-#   }
-
-#   image_id = "ami-test"
+#   image_id = aws_ami_from_instance.example.id
 
 #   instance_initiated_shutdown_behavior = "terminate"
 
