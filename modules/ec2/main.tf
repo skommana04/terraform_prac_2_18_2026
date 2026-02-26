@@ -314,3 +314,79 @@ resource "aws_lb_target_group" "catalogue" {
 #       Name = "roboshop-dev-catalogue"
 #     }
 # }
+
+# resource "aws_autoscaling_group" "bar" {
+#   name                      = "roboshop-dev-catalogue"
+#   max_size                  = 10
+#   min_size                  = 1
+#   health_check_grace_period = 100
+#   health_check_type         = "ELB"
+#   desired_capacity          = 1
+#   force_delete              = false
+#   launch_template {
+#     id      = aws_launch_template.catalogue.id
+#     version = aws_launch_template.catalogue.latest_version
+#     }
+#   vpc_zone_identifier       = local.private_subnet_id
+#   target_group_arns = [aws_lb_target_group.catalogue.arn] 
+    
+#   dynamic "tag" {
+#     for_each = merge (
+#         local.common_tags,
+#         {
+#             Name = "${local.common_name_suffix}-catalogue"
+#         }
+#     )
+#     content {
+#     key                 = tag.key
+#     value               = tag.value
+#     propagate_at_launch = true
+#   }
+#   }
+#   timeouts {
+#     delete = "15m"
+         
+#}
+# }
+
+resource "aws_autoscaling_policy" "example" {
+  autoscaling_group_name = aws_autoscaling_group.catalogue.id
+  name                   = "roboshop-dev-catalogue"
+  policy_type            = "TargetTrackingScaling"
+  target_tracking_configuration {
+    target_value = 75.0
+    predefined_metric_specification {
+        predefined_metric_type = "ASGAverageCPUUtilization"
+      
+    }
+
+  }
+}
+
+#------------------
+resource "aws_lb_listener_rule" "catalogue" {
+  listener_arn = data.aws_ssm_parameter.backend_alb_listener_arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.catalogue.arn
+  }
+
+  condition {
+    host_header {
+      values = ["catalogue.backend-alb-${var.env}.${var.domain_name}"]
+    }
+  }
+}
+
+resource "terraform_data" "catalogue_local" {
+  triggers_replace = [
+    aws_instance.catalogue.id
+  ]
+  
+  depends_on = [aws_autoscaling_policy.catalogue]
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
+  }
+}

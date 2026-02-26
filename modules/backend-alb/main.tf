@@ -28,3 +28,17 @@ resource "aws_lb_listener" "backend_lsitener" {
     }
   }
 }
+
+resource "aws_route53_record" "backend_alb" {
+  zone_id = "Z06083563MQUI4X3GPRCP"
+  name    = "*.backend-alb-dev.saidevops.site"
+  type    = "A"
+ 
+  alias {
+    name = aws_lb.backend-alb.dns_name
+    zone_id = aws_lb.backend-alb.zone_id
+    evaluate_target_health = true
+  }
+
+
+}
